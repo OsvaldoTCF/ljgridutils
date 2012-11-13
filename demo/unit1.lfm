@@ -11,7 +11,7 @@ object Form1: TForm1
   LCLVersion = '1.1'
   object StringGrid1: TStringGrid
     Left = 0
-    Height = 190
+    Height = 165
     Top = 0
     Width = 320
     Align = alClient
@@ -20,7 +20,7 @@ object Form1: TForm1
   object Button1: TButton
     Left = 0
     Height = 25
-    Top = 190
+    Top = 165
     Width = 320
     Align = alBottom
     AutoSize = True
@@ -38,5 +38,15 @@ object Form1: TForm1
     Caption = '&Clear'
     OnClick = Button2Click
     TabOrder = 2
+  end
+  object btFind: TButton
+    Left = 0
+    Height = 25
+    Top = 190
+    Width = 320
+    Align = alBottom
+    Caption = '&Find'
+    OnClick = btFindClick
+    TabOrder = 3
   end
 end

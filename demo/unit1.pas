@@ -14,7 +14,9 @@ type
   TForm1 = class(TForm)
     Button1: TButton;
     Button2: TButton;
+    btFind: TButton;
     StringGrid1: TStringGrid;
+    procedure btFindClick(Sender: TObject);
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -40,6 +42,11 @@ end;
 procedure TForm1.Button1Click(Sender: TObject);
 begin
   LoadJSON(StringGrid1, 'data.json');
+end;
+
+procedure TForm1.btFindClick(Sender: TObject);
+begin
+  FindItem(StringGrid1, 'souza');
 end;
 
 procedure TForm1.FormCreate(Sender: TObject);
