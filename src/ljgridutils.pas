@@ -44,6 +44,8 @@ procedure ClearGrid(AGrid: TCustomStringGrid;
   const AIndicatorWidth: Integer = 12);
 { Get selected row as JSONObject. }
 function GetSelectedRow(AGrid: TCustomStringGrid): TJSONObject;
+{ Get selected rows as JSONArray. }
+function GetSelectedRows(AGrid: TCustomStringGrid): TJSONArray;
 
 var
   JSON_UNKNOWN_STR: ShortString = '[UNKNOWN]';
@@ -59,6 +61,7 @@ implementation
 
 var
   _SelectedRow: TJSONObject = nil;
+  _SelectedRows: TJSONArray = nil;
 
 procedure LoadJSON(AGrid: TCustomStringGrid; AJSON: TJSONData;
   const AShowErrorMsg: Boolean; const AAutoSizeColumns: Boolean;
@@ -417,8 +420,30 @@ begin
     Result.Clear;
 end;
 
+function GetSelectedRows(AGrid: TCustomStringGrid): TJSONArray;
+var
+  I, J: Integer;
+  VItem: TJSONObject;
+begin
+  if not Assigned(_SelectedRows) then
+    _SelectedRows := TJSONArray.Create;
+  Result := _SelectedRows;
+  Result.Clear;
+  for I := AGrid.Selection.Top to AGrid.Selection.Bottom do
+  begin
+    VItem := TJSONObject.Create;
+    for J := 1 to Pred(AGrid.ColCount) do
+      VItem.Add(AGrid.Cols[J][0], AGrid.Rows[I][J]);
+    Result.Add(VItem);
+  end;
+  if Assigned(VItem) and (VItem.Count > 0) and
+    (VItem.Names[0] = '') and (VItem.Items[0].AsString = '') then
+    Result.Clear;
+end;
+
 finalization
   FreeAndNil(_SelectedRow);
+  FreeAndNil(_SelectedRows);
 
 end.
 
