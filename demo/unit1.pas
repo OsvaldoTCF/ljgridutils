@@ -20,6 +20,7 @@ type
     procedure Button1Click(Sender: TObject);
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure StringGrid1Selection(Sender: TObject; aCol, aRow: Integer);
   end;
 
 var
@@ -52,6 +53,11 @@ end;
 procedure TForm1.FormCreate(Sender: TObject);
 begin
   Button2Click(Sender);
+end;
+
+procedure TForm1.StringGrid1Selection(Sender: TObject; aCol, aRow: Integer);
+begin
+  Caption := GetSelectedRow(StringGrid1).AsJSON;
 end;
 
 end.
