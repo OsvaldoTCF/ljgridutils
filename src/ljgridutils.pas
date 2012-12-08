@@ -43,8 +43,10 @@ function FindItem(AGrid: TCustomStringGrid; const AText: string;
 procedure ClearGrid(AGrid: TCustomStringGrid;
   const AIndicatorWidth: Integer = 12);
 { Get selected row as JSONObject. }
+procedure GetSelectedRow(AGrid: TCustomStringGrid; ARow: TJSONObject);
 function GetSelectedRow(AGrid: TCustomStringGrid): TJSONObject;
 { Get selected rows as JSONArray. }
+procedure GetSelectedRows(AGrid: TCustomStringGrid; ARows: TJSONArray);
 function GetSelectedRows(AGrid: TCustomStringGrid): TJSONArray;
 
 var
@@ -405,40 +407,50 @@ begin
   end;
 end;
 
-function GetSelectedRow(AGrid: TCustomStringGrid): TJSONObject;
+procedure GetSelectedRow(AGrid: TCustomStringGrid; ARow: TJSONObject);
 var
   I: Integer;
+begin
+  ARow.Clear;
+  for I := 1 to Pred(AGrid.ColCount) do
+    ARow.Add(AGrid.Cols[I][0], AGrid.Rows[AGrid.Row][I]);
+  if (ARow.Count > 0) and (ARow.Names[0] = '') and
+    (ARow.Items[0].AsString = '') then
+    ARow.Clear;
+end;
+
+function GetSelectedRow(AGrid: TCustomStringGrid): TJSONObject;
 begin
   if not Assigned(_SelectedRow) then
     _SelectedRow := TJSONObject.Create;
   Result := _SelectedRow;
-  Result.Clear;
-  for I := 1 to Pred(AGrid.ColCount) do
-    Result.Add(AGrid.Cols[I][0], AGrid.Rows[AGrid.Row][I]);
-  if (Result.Count > 0) and (Result.Names[0] = '') and
-    (Result.Items[0].AsString = '') then
-    Result.Clear;
+  GetSelectedRow(AGrid, Result);
 end;
 
-function GetSelectedRows(AGrid: TCustomStringGrid): TJSONArray;
+procedure GetSelectedRows(AGrid: TCustomStringGrid; ARows: TJSONArray);
 var
   I, J: Integer;
   VItem: TJSONObject;
 begin
-  if not Assigned(_SelectedRows) then
-    _SelectedRows := TJSONArray.Create;
-  Result := _SelectedRows;
-  Result.Clear;
+  ARows.Clear;
   for I := AGrid.Selection.Top to AGrid.Selection.Bottom do
   begin
     VItem := TJSONObject.Create;
     for J := 1 to Pred(AGrid.ColCount) do
       VItem.Add(AGrid.Cols[J][0], AGrid.Rows[I][J]);
-    Result.Add(VItem);
+    ARows.Add(VItem);
   end;
   if Assigned(VItem) and (VItem.Count > 0) and
     (VItem.Names[0] = '') and (VItem.Items[0].AsString = '') then
-    Result.Clear;
+    ARows.Clear;
+end;
+
+function GetSelectedRows(AGrid: TCustomStringGrid): TJSONArray;
+begin
+  if not Assigned(_SelectedRows) then
+    _SelectedRows := TJSONArray.Create;
+  Result := _SelectedRows;
+  GetSelectedRows(AGrid, Result);
 end;
 
 finalization
