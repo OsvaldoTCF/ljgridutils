@@ -42,6 +42,8 @@ function FindItem(AGrid: TCustomStringGrid; const AText: string;
 { Clear grid. }
 procedure ClearGrid(AGrid: TCustomStringGrid;
   const AIndicatorWidth: Integer = 12);
+{ Get selected row as JSONObject. }
+function GetSelectedRow(AGrid: TCustomStringGrid): TJSONObject;
 
 var
   JSON_UNKNOWN_STR: ShortString = '[UNKNOWN]';
@@ -54,6 +56,9 @@ var
   JSON_FORMAT_INT_STR: ShortString = '%d';
 
 implementation
+
+var
+  _SelectedRow: TJSONObject = nil;
 
 procedure LoadJSON(AGrid: TCustomStringGrid; AJSON: TJSONData;
   const AShowErrorMsg: Boolean; const AAutoSizeColumns: Boolean;
@@ -396,6 +401,24 @@ begin
     EndUpdate;
   end;
 end;
+
+function GetSelectedRow(AGrid: TCustomStringGrid): TJSONObject;
+var
+  I: Integer;
+begin
+  if not Assigned(_SelectedRow) then
+    _SelectedRow := TJSONObject.Create;
+  Result := _SelectedRow;
+  Result.Clear;
+  for I := 1 to Pred(AGrid.ColCount) do
+    Result.Add(AGrid.Cols[I][0], AGrid.Rows[AGrid.Row][I]);
+  if (Result.Count > 0) and (Result.Names[0] = '') and
+    (Result.Items[0].AsString = '') then
+    Result.Clear;
+end;
+
+finalization
+  FreeAndNil(_SelectedRow);
 
 end.
 
