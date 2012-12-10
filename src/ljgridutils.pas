@@ -412,7 +412,7 @@ var
   I: Integer;
 begin
   ARow.Clear;
-  for I := 1 to Pred(AGrid.ColCount) do
+  for I := AGrid.FixedCols to Pred(AGrid.ColCount) do
     ARow.Add(AGrid.Cols[I][0], AGrid.Rows[AGrid.Row][I]);
   if (ARow.Count > 0) and (ARow.Names[0] = '') and
     (ARow.Items[0].AsString = '') then
@@ -436,7 +436,7 @@ begin
   for I := AGrid.Selection.Top to AGrid.Selection.Bottom do
   begin
     VItem := TJSONObject.Create;
-    for J := 1 to Pred(AGrid.ColCount) do
+    for J := AGrid.FixedCols to Pred(AGrid.ColCount) do
       VItem.Add(AGrid.Cols[J][0], AGrid.Rows[I][J]);
     ARows.Add(VItem);
   end;
